@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: strongbox
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: ADMIN_CODE
+        sync: false
+      - key: NEQUI_MONTH_URL
+        value: https://checkout.nequi.wompi.co/l/8FuLeo
+      - key: NEQUI_YEAR_URL
+        value: https://checkout.nequi.wompi.co/l/cV1z6Y
+      - key: DATA_DIR
+        value: /var/data
