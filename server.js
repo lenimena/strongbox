@@ -1,6 +1,6 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const PORT=Number(process.env.PORT)||3000,HOST=process.env.HOST||'0.0.0.0',ROOT=__dirname;
-const STORAGE_DIR=process.env.DATA_DIR||ROOT,DATA_FILE=path.join(STORAGE_DIR,'server-data.json'),ADS_DIR=path.join(STORAGE_DIR,'ads');
+const STORAGE_DIR=process.env.DATA_DIR||ROOT,DATA_FILE=path.join(STORAGE_DIR,'server-data.json'),ADS_DIR=path.join(ROOT,'assets','ads');
 const PAYMENT_LINKS={month:process.env.NEQUI_MONTH_URL||'https://checkout.nequi.wompi.co/l/8FuLeo',year:process.env.NEQUI_YEAR_URL||'https://checkout.nequi.wompi.co/l/cV1z6Y'};
 fs.mkdirSync(STORAGE_DIR,{recursive:true});fs.mkdirSync(ADS_DIR,{recursive:true});
 const LEVELS=Object.fromEntries(Array.from({length:50},(_,i)=>[i+1,{reward:10,time:55-(i%10)*5}]));
