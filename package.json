@@ -1,6 +1,6 @@
 {
   "name": "strongbox",
-  "version": "2.26.0",
+  "version": "2.27.0",
   "private": true,
   "description": "STRONGBOX - juego individual de claves secretas, recompensas, membresías, ranking y publicidad",
   "main": "server.js",

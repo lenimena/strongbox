@@ -106,14 +106,14 @@ async function applyResult(success){
     state.balance=Number(d.balance)||0;state.blockedUntil=d.blockedUntil||null;if(Number.isInteger(Number(d.currentLevel)))state.currentLevel=Number(d.currentLevel);save();refreshRanking();return d;
   }catch(e){return{error:e.message}}
 }
-async function timeExpired(){if(game.finished)return;game.finished=true;stopTimer();$('#game-status').textContent='TIEMPO AGOTADO';const d=await applyResult(false);const loss=d&&!d.error?d.levelReward:0;const bal=d&&!d.error?d.balance:state.balance;finishModal('Clave no descubierta','⏱ TIEMPO AGOTADO',`No descubriste la clave del Nivel ${game.level}. Permaneces en el Nivel ${game.level}.${bal<=0?' Tu saldo llegó a 0.':''}`,loss,'REINTENTAR NIVEL','loss')}
+async function timeExpired(){if(game.finished)return;game.finished=true;stopTimer();$('#game-status').textContent='TIEMPO AGOTADO';const d=await applyResult(false);const loss=d&&!d.error?d.levelReward:0;const bal=d&&!d.error?d.balance:state.balance;finishModal('Clave no descubierta','Tiempo agotado',`No descubriste la clave del Nivel ${game.level}. Permaneces en el Nivel ${game.level}.${bal<=0?' Tu saldo llegó a 0.':''}`,loss,'REINTENTAR NIVEL','loss')}
 function renderBoard(){const board=$('#board');board.innerHTML='';for(let i=0;i<16;i++){const b=document.createElement('button');b.className='cell';b.type='button';if(game.revealed.includes(i)){b.classList.add('revealed');b.dataset.digit=game.board[i]}else b.innerHTML='<img src="assets/moneda.svg" alt="Número oculto">';b.onclick=()=>pick(i,b);board.appendChild(b)}}
 function revealCell(index,digit,error=false){game.revealed=game.revealed.filter(x=>x!==index);game.revealed.push(index);const b=$('#board').children[index];b.classList.add(error?'error-reveal':'revealed');b.dataset.digit=digit;b.innerHTML=''}
 async function pick(i,btn){
   if(game.finished||game.revealed.includes(i)||game.timeLeft<=0)return;
   game.attempts++;const digit=game.board[i];revealCell(i,digit);$('#attempts').textContent=game.attempts;
   if(digit===game.target[game.progress]){
-    game.progress++;$('#game-status').textContent=game.progress===game.target.length?'¡CLAVE DESCUBIERTA!':'¡Correcto! Busca el siguiente dígito.';
+    game.progress++;$('#game-status').textContent='Correcto';
     if(game.progress===game.target.length){
       game.finished=true;stopTimer();const previousLevel=game.level;const d=await applyResult(true);if(!state.member)state.currentLevel=Math.min(MAX_VISITOR_LEVEL,previousLevel+1);save();const levelReward=d&&!d.error?d.levelReward:0,blockBonus=d&&!d.error?d.blockBonus:0,delta=d&&!d.error?d.delta:levelReward+blockBonus,next=state.currentLevel,block=BLOCKS[currentBlock(previousLevel)],completedBlock=previousLevel%10===0;
       if(!state.member&&previousLevel===MAX_VISITOR_LEVEL)finishModal('¡Bloque 3 completado!','🔒 MEMBRESÍA REQUERIDA','Has completado los 30 niveles de prueba. Hazte miembro para desbloquear los niveles 31 al 50, acumular ClicCoin y aparecer en el Ranking Millonario.',0,'OBTENER MEMBRESÍA');
@@ -122,8 +122,8 @@ async function pick(i,btn){
       else finishModal(`¡Nivel ${previousLevel} superado!`,'🔓 NIVEL DESBLOQUEADO',`Clave ${game.target} descubierta. Recompensa del nivel: +${coins(levelReward)}. Ahora está disponible el Nivel ${next}.`,delta,'SIGUIENTE NIVEL');
     }
   }else{
-    $('#game-status').textContent='❌ Incorrecto: memoriza la posición';btn.classList.remove('revealed');btn.classList.add('error-reveal');
-    setTimeout(()=>{if(!game.finished){game.revealed=[];game.progress=0;renderBoard();$('#game-status').textContent='Encuentra el primer dígito'}},700);
+    $('#game-status').textContent='Incorrecto';btn.classList.remove('revealed');btn.classList.add('error-reveal');
+    setTimeout(()=>{if(!game.finished){game.revealed=[];game.progress=0;renderBoard();$('#game-status').textContent='Buscando'}},700);
   }
 }
 function closeModal(){$('#modal').classList.remove('show')}
